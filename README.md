@@ -87,6 +87,7 @@ The request list has a column for the caller. It shows `–` for now: neither `/
 
 ## Limits
 
+- Live speeds are measured between two polls. A prompt batch is timed to the poll that saw it land, so a short batch can read up to one interval too fast or too slow, and the peak with it. Over a whole request the graph adds up to the server's own token count; the request list has the server's exact speeds.
 - A request shorter than one poll interval is in the request list but may not show in the graph.
 - Request history needs llama-server to run as a systemd unit and log at its default verbosity.
 - GPU readings are NVIDIA only. A static binary cannot load the NVML library itself, so nltop keeps one `nvidia-smi` process open, which reads NVML and prints a line per second.
