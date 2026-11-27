@@ -96,6 +96,17 @@ func TestCallerOfAbortedRequest(t *testing.T) {
 	if got := whoOf(m); got[1] != "" || got[2] != "Rico" {
 		t.Errorf("callers: %v", got)
 	}
+	// The cut request's row says who and how long, and no made-up zeros.
+	m.Update(pollMsg{at: t0.Add(2 * time.Minute), slots: readSlots(t, "slots_idle.json")})
+	row := ""
+	for _, l := range strings.Split(text(screen(m, 140, 40)), "\n") {
+		if strings.Contains(l, "×") {
+			row = strings.Join(strings.Fields(strings.Split(l, "││")[0]), " ")
+		}
+	}
+	if row != "│×10:01:00 Rico 3.0s cut" {
+		t.Errorf("row of the cut request: %q", row)
+	}
 }
 
 // While a request runs, its caller shows in the slots panel and in the first

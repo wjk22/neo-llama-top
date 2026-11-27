@@ -695,6 +695,16 @@ func (m *model) doneRow(r Request) (string, map[string]reqCell) {
 	case r.Truncated:
 		mark = stWarn.Render("!")
 	}
+	if r.Cancelled && r.PromptMs == 0 && r.GenMs == 0 {
+		// Cut short before the server logged any count: nothing is known but
+		// when, who and how long.
+		return mark, map[string]reqCell{
+			"time": {r.Start.Format("15:04:05"), stLabel},
+			"who":  who(r.Who),
+			"took": {shortDur(r.End.Sub(r.Start)), stText},
+			"gen":  {"cut", stErr},
+		}
+	}
 	return mark, map[string]reqCell{
 		"time":   {r.Start.Format("15:04:05"), stLabel},
 		"who":    who(r.Who),
