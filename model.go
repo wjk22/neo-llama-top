@@ -5,11 +5,14 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
+
+	"github.com/wjk22/neo-llama-top/internal/tap"
 )
 
 type config struct {
 	url      string
 	unit     string
+	tapLog   string // nltap's log, which names the callers
 	interval time.Duration
 	version  string
 }
@@ -75,6 +78,10 @@ type model struct {
 	scroll      int // rows the request list is scrolled back
 	scrollMax   int
 
+	// callers, from nltap's log
+	tapLive map[uint64]tap.Event // calls in flight, by nltap's request number
+	tapDone []tap.Event          // finished calls whose request the journal has not reported yet
+
 	// GPUs, from NVML
 	gpus    []GPU
 	gpuHist map[int][]float64 // utilisation history by GPU index
@@ -87,6 +94,7 @@ func newModel(cfg config) *model {
 		now:     time.Now(),
 		trk:     newTracker(),
 		live:    map[int]*Request{},
+		tapLive: map[uint64]tap.Event{},
 		gpuHist: map[int][]float64{},
 	}
 	for i := range m.show {
@@ -142,6 +150,9 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case journalMsg:
 		m.onJournal(msg)
 
+	case tapMsg:
+		m.onTap(msg)
+
 	case gpuMsg:
 		m.onGPU(msg)
 	}
@@ -195,6 +206,7 @@ func (m *model) onJournal(j journalMsg) {
 			continue
 		}
 		delete(m.live, r.Slot)
+		m.nameFromTap(r)
 		m.reqs = append(m.reqs, *r)
 		m.today.add(*r)
 		if m.scroll > 0 {

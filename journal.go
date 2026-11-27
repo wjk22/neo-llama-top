@@ -5,7 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/fs"
+	"os"
 	"os/exec"
+	"os/user"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -44,8 +49,8 @@ type Request struct {
 // in the context at release, minus what this request evaluated and generated.
 // The last generated token is not kept in the context, hence the +1.
 func (r Request) Cached() int {
-	if !r.Done || r.CtxTokens == 0 || r.Truncated {
-		return 0
+	if !r.Done || r.CtxTokens == 0 || r.Truncated || r.Cancelled {
+		return 0 // a cancelled request logs no token counts to subtract
 	}
 	return max(0, r.CtxTokens-r.PromptTokens-r.GenTokens+1)
 }
@@ -232,6 +237,19 @@ func (e journalEntry) time() time.Time {
 // since yesterday 00:00, so the last request and today's totals are known
 // right away, then new lines as they are written.
 func followJournal(ctx context.Context, unit string, send func(journalMsg)) {
+	// Without permission journalctl gives no error for a system unit: it shows
+	// the user's own journal, which has nothing. So the permission is checked
+	// here, and its explanation replaces whatever journalctl has to say.
+	if denied := journalDenied(journalDirs, currentUser()); denied != "" {
+		send(journalMsg{note: denied})
+		plain := send
+		send = func(m journalMsg) {
+			if m.note != "" {
+				m.note = denied
+			}
+			plain(m)
+		}
+	}
 	p := newJournalParser()
 	var last time.Time // newest entry handled, so a restarted journalctl does not repeat the backlog
 	for {
@@ -252,6 +270,45 @@ func followJournal(ctx context.Context, unit string, send func(journalMsg)) {
 		case <-time.After(10 * time.Second):
 		}
 	}
+}
+
+// journalDirs is where journald keeps the system journal: on disk, or in
+// memory when nothing is stored.
+var journalDirs = []string{"/var/log/journal", "/run/log/journal"}
+
+func currentUser() string {
+	if u, err := user.Current(); err == nil {
+		return u.Username
+	}
+	return "this user"
+}
+
+// journalDenied checks whether the system journal exists and cannot be opened
+// for lack of permission. If so it returns what to tell the user, else "".
+func journalDenied(dirs []string, who string) string {
+	denied := ""
+	for _, dir := range dirs {
+		files, _ := filepath.Glob(filepath.Join(dir, "*", "system.journal"))
+		if _, err := os.ReadDir(dir); errors.Is(err, fs.ErrPermission) {
+			denied = dir
+		}
+		for _, f := range files {
+			h, err := os.Open(f)
+			if err == nil {
+				h.Close()
+				return ""
+			}
+			if errors.Is(err, fs.ErrPermission) {
+				denied = dir
+			}
+		}
+	}
+	if denied == "" {
+		return ""
+	}
+	return fmt.Sprintf("The journal can't be read: %s has no permission for the system journal in %s. "+
+		"Its readers are root and the members of the systemd-journal group (on Debian adm too): "+
+		"run \"sudo usermod -aG systemd-journal %s\" and log in again, or start nltop as root.", who, denied, who)
 }
 
 func runJournal(ctx context.Context, unit string, p *journalParser, last *time.Time, send func(journalMsg)) error {

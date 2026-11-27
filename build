@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds builds/nltop: one static binary, version stamped.
+# Builds builds/nltop and builds/nltap: static binaries, version stamped.
 #
 # The version is MAJOR.MINOR from the VERSION file, then the number of commits
 # since VERSION last changed (that commit is 1), then the short commit hash:
@@ -28,9 +28,11 @@ if [ -z "$n" ] && git rev-parse --git-dir >/dev/null 2>&1; then
     hash=$(git rev-parse --short=7 HEAD)
     [ -z "$(git status --porcelain)" ] || dirty=+dev
 fi
+version="$(tr -d ' \n' < VERSION).${n:-0}$dirty (${hash:-no git})"
 
 mkdir -p builds
-CGO_ENABLED=0 go build -trimpath \
-    -ldflags "-s -w -X main.buildN=$n -X main.buildHash=$hash -X main.buildDirty=$dirty" \
-    -o builds/nltop .
-echo "built builds/nltop: $(builds/nltop -version)"
+for target in nltop:. nltap:./cmd/nltap; do
+    CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X 'main.version=$version'" \
+        -o "builds/${target%%:*}" "${target#*:}"
+done
+echo "built builds/nltop and builds/nltap: $version"

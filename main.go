@@ -7,47 +7,35 @@ package main
 
 import (
 	"context"
-	_ "embed"
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	tea "charm.land/bubbletea/v2"
+
+	"github.com/wjk22/neo-llama-top/internal/tap"
 )
 
-//go:embed VERSION
-var versionFile string
-
-// Set by ./build: the commit count since VERSION last changed, the short
-// commit hash, and "+dev" for a build with uncommitted changes.
-var buildN, buildHash, buildDirty string
-
-// version is MAJOR.MINOR from the VERSION file plus the commit count,
-// e.g. "0.1.7 (3bc09b7)".
-func version() string {
-	v := strings.TrimSpace(versionFile)
-	if buildN == "" {
-		return v + " (unversioned build)"
-	}
-	return fmt.Sprintf("%s.%s%s (%s)", v, buildN, buildDirty, buildHash)
-}
+// version is set by ./build: MAJOR.MINOR from the VERSION file, the commit
+// count since it last changed, and the commit, e.g. "0.1.7 (3bc09b7)".
+var version = "unversioned build"
 
 func main() {
 	url := flag.String("url", "http://127.0.0.1:8080", "base URL of llama-server")
 	unit := flag.String("unit", "llama-server", "systemd unit whose journal holds the request history")
+	tapLog := flag.String("tap", tap.DefaultLog, "nltap's log, which names the callers")
 	interval := flag.Duration("interval", 500*time.Millisecond, "time between two readings of /slots")
 	apiKey := flag.String("api-key", "", "API key, if the server was started with one (default $LLAMA_API_KEY)")
 	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "nltop %s\n\nUsage: nltop [flags]\n\n", version())
+		fmt.Fprintf(flag.CommandLine.Output(), "nltop %s\n\nUsage: nltop [flags]\n\n", version)
 		flag.PrintDefaults()
 		fmt.Fprint(flag.CommandLine.Output(), "\nKeys: 1-5 show or hide a panel · ↑ ↓ PgUp PgDn Home End scroll the requests · q quit\n")
 	}
 	flag.Parse()
 	if *showVersion {
-		fmt.Println("nltop", version())
+		fmt.Println("nltop", version)
 		return
 	}
 	if *apiKey == "" {
@@ -61,9 +49,10 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	p := tea.NewProgram(newModel(config{url: *url, unit: *unit, interval: *interval, version: version()}))
+	p := tea.NewProgram(newModel(config{url: *url, unit: *unit, tapLog: *tapLog, interval: *interval, version: version}))
 	go poll(ctx, newClient(*url, *apiKey), *interval, func(m pollMsg) { p.Send(m) })
 	go followJournal(ctx, *unit, func(m journalMsg) { p.Send(m) })
+	go followTap(ctx, *tapLog, *interval, func(m tapMsg) { p.Send(m) })
 	go followGPU(ctx, func(m gpuMsg) { p.Send(m) })
 
 	if _, err := p.Run(); err != nil {

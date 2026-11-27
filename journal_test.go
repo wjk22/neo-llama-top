@@ -121,6 +121,10 @@ func TestJournalRestartAndCancel(t *testing.T) {
 	if !ok || ev.req == nil || !ev.req.Done || !ev.req.Cancelled {
 		t.Errorf("cancelled request: %+v", ev.req)
 	}
+	// It logged no token counts, so nothing can be said about its cache use.
+	if got := ev.req.Cached(); got != 0 {
+		t.Errorf("cancelled request: cached = %d, want 0", got)
+	}
 
 	feed("100", "0.07.000.000 I slot launch_slot_: id  0 | task 9 | processing task, is_child = 0")
 	ev, ok = feed("200", "0.00.100.000 I srv  llama_server: initializing ...")

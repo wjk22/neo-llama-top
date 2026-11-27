@@ -334,23 +334,18 @@ func (m *model) slotBlock(s Slot, iw int) []string {
 		lv = nil
 	}
 
-	// On the right: the task number and how long it has been running. In a
-	// narrow panel the state on the left wins and the task number goes first.
+	// On the right: who is calling, or the task number when nobody is named,
+	// and how long the request has been running. In a narrow panel the state
+	// on the left wins and the running time goes first.
 	left := " " + stLabel.Render("slot ") + stText.Render(strconv.Itoa(s.ID)) + " " + m.slotState(s)
-	task := stDim.Render("task ") + stLabel.Render(strconv.Itoa(s.Task))
-	right := task
+	right := stDim.Render("task ") + stLabel.Render(strconv.Itoa(s.Task))
 	if s.Processing {
-		var start time.Time
-		if lv != nil {
-			start = lv.Start
-		} else if tr != nil {
-			start = tr.firstSeen
+		if name := m.liveCallers()[s.ID]; name != "" {
+			right = stTitle.Render(name)
 		}
-		if !start.IsZero() {
-			took := stText.Render(dur(m.now.Sub(start)))
-			right = task + sep() + took
-			if width(left)+width(right)+2 > iw {
-				right = took
+		if start := m.slotStart(s); !start.IsZero() {
+			if long := right + sep() + stText.Render(dur(m.now.Sub(start))); width(left)+width(long)+2 <= iw {
+				right = long
 			}
 		}
 	}
@@ -409,7 +404,11 @@ func (m *model) slotLine(s Slot, iw int) string {
 	} else {
 		right += strings.Repeat(" ", 10)
 	}
-	left := " " + stText.Render(fitRight(strconv.Itoa(s.ID), 2)) + " " + fit(m.slotState(s), 16) + " "
+	state := m.slotState(s)
+	if name := m.liveCallers()[s.ID]; name != "" {
+		state = phaseStyle(slotPhase(s)).Render("● ") + stTitle.Render(name) // the colour still tells the phase
+	}
+	left := " " + stText.Render(fitRight(strconv.Itoa(s.ID), 2)) + " " + fit(state, 16) + " "
 	mw := max(4, iw-width(left)-width(right)-2)
 	return left + meter(mw, f, gradCtx) + " " + right + " "
 }
@@ -441,12 +440,12 @@ func (m *model) summaryLines(withLast, airy bool) []string {
 			out = append(out, l,
 				pad+stLabel.Render("prompt ")+stText.Render(commas(r.PromptTokens))+speed(phPrompt, r.PromptTPS),
 				pad+stLabel.Render("gen    ")+stText.Render(commas(r.GenTokens))+speed(phGen, r.GenTPS))
+		} else if m.journalNote != "" {
+			// The first sentence says what is wrong; the requests panel has the rest.
+			short, _, _ := strings.Cut(m.journalNote, ": ")
+			out = append(out, " "+stLabel.Render("last   ")+stWarn.Render(short))
 		} else {
-			note := m.noRequests()
-			if m.journalNote != "" {
-				note = m.journalNote
-			}
-			out = append(out, " "+stLabel.Render("last   ")+stDim.Render(note))
+			out = append(out, " "+stLabel.Render("last   ")+stDim.Render(m.noRequests()))
 		}
 		if airy {
 			out = append(out, "")
@@ -713,15 +712,9 @@ func (m *model) doneRow(r Request) (string, map[string]reqCell) {
 func (m *model) liveRow(s Slot) (string, map[string]reqCell) {
 	ph := slotPhase(s)
 	tr := m.trk.slots[s.ID]
-	var start time.Time
-	name := ""
-	if lv := m.live[s.ID]; lv != nil && lv.Task == s.Task {
-		start, name = lv.Start, lv.Who
-	} else if tr != nil {
-		start = tr.firstSeen
-	}
+	start := m.slotStart(s)
 	cells := map[string]reqCell{
-		"who":    who(name),
+		"who":    who(m.liveCallers()[s.ID]),
 		"prompt": {tokens(s.PromptProcessed), stTitle},
 		"cached": {tokens(s.PromptCached), stLabel},
 		"gen":    {tokens(s.Decoded()), stTitle},
@@ -796,12 +789,16 @@ func (m *model) requestsBox(w, h int) string {
 			shown++
 		}
 	}
-	if len(m.reqs) == 0 && !m.busy() {
-		note := m.noRequests()
+	if len(m.reqs) == 0 {
+		// No history: say why, in full. The journal's own reason comes first.
+		note, st := m.noRequests(), stDim
 		if m.journalNote != "" {
-			note = m.journalNote
+			note, st = m.journalNote, stWarn
 		}
-		lines = append(lines, "", " "+stDim.Render(note))
+		lines = append(lines, "")
+		for _, l := range strings.Split(ansi.Wordwrap(note, iw-2, ""), "\n") {
+			lines = append(lines, " "+st.Render(l))
+		}
 	}
 
 	top := edge{left: []string{panelTitle("⁴", "requests")}}
