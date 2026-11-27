@@ -1,0 +1,36 @@
+#!/bin/sh
+# Builds builds/nltop: one static binary, version stamped.
+#
+# The version is MAJOR.MINOR from the VERSION file, then the number of commits
+# since VERSION last changed (that commit is 1), then the short commit hash:
+# 0.1.7 (3bc09b7). A build with uncommitted changes reads 0.1.7+dev (3bc09b7).
+#
+# Without a .git folder, pass the number and hash in:
+#   BUILD_N=7 BUILD_HASH=3bc09b7 ./build
+set -eu
+cd "$(dirname "$0")"
+
+command -v go >/dev/null 2>&1 || {
+    echo "build: Go is not installed. On Debian: sudo apt install golang-go (or see https://go.dev/dl/)" >&2
+    exit 1
+}
+
+n=${BUILD_N:-}
+hash=${BUILD_HASH:-}
+dirty=
+if [ -z "$n" ] && git rev-parse --git-dir >/dev/null 2>&1; then
+    bump=$(git log -1 --format=%H -- VERSION)
+    if [ -n "$bump" ]; then
+        n=$(( $(git rev-list --count HEAD) - $(git rev-list --count "$bump") + 1 ))
+    else
+        n=0 # VERSION is not committed yet
+    fi
+    hash=$(git rev-parse --short=7 HEAD)
+    [ -z "$(git status --porcelain)" ] || dirty=+dev
+fi
+
+mkdir -p builds
+CGO_ENABLED=0 go build -trimpath \
+    -ldflags "-s -w -X main.buildN=$n -X main.buildHash=$hash -X main.buildDirty=$dirty" \
+    -o builds/nltop .
+echo "built builds/nltop: $(builds/nltop -version)"

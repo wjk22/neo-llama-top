@@ -1,0 +1,43 @@
+{"__REALTIME_TIMESTAMP": "1795741437931753", "_PID": "51317", "MESSAGE": "47.29.817.866 I slot       select: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.998 (> 0.100 thold), f_keep = 0.998"}
+{"__REALTIME_TIMESTAMP": "1795741437988423", "_PID": "51317", "MESSAGE": "47.29.819.536 I slot launch_slot_: id  0 | task 22278 | processing task, is_child = 0"}
+{"__REALTIME_TIMESTAMP": "1795741441379494", "_PID": "51317", "MESSAGE": "47.33.265.768 I slot print_timing: id  0 | task 22278 | prompt eval time =    1311.93 ms /   118 tokens (   11.12 ms per token,    89.94 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795741441379494", "_PID": "51317", "MESSAGE": "47.33.265.772 I slot print_timing: id  0 | task 22278 |        eval time =    2134.27 ms /    92 tokens (   23.45 ms per token,    42.64 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795741441379494", "_PID": "51317", "MESSAGE": "47.33.265.773 I slot print_timing: id  0 | task 22278 |       total time =    3446.21 ms /   210 tokens"}
+{"__REALTIME_TIMESTAMP": "1795741441379494", "_PID": "51317", "MESSAGE": "47.33.265.773 I slot print_timing: id  0 | task 22278 |    graphs reused =      22009"}
+{"__REALTIME_TIMESTAMP": "1795741441379494", "_PID": "51317", "MESSAGE": "47.33.265.774 I slot print_timing: id  0 | task 22278 |   graph reallocs =        196    /     0        (same size) / (changed size)"}
+{"__REALTIME_TIMESTAMP": "1795741441381344", "_PID": "51317", "MESSAGE": "47.33.267.626 I slot      release: id  0 | task 22278 | stop processing: n_tokens = 57531, truncated = 0"}
+{"__REALTIME_TIMESTAMP": "1795765858896212", "_PID": "51317", "MESSAGE": "454.30.782.267 I slot       select: id  0 | task -1 | selected slot by LRU, n_tokens = 57531, t_last = 7864834033"}
+{"__REALTIME_TIMESTAMP": "1795765858897239", "_PID": "51317", "MESSAGE": "454.30.782.564 I slot launch_slot_: id  0 | task 22784 | processing task, is_child = 0"}
+{"__REALTIME_TIMESTAMP": "1795765862155384", "_PID": "51317", "MESSAGE": "454.34.041.661 I slot print_timing: id  0 | task 22784 | n_gen =    181, tg =  59.69 t/s, tg_3s =  60.02 t/s"}
+{"__REALTIME_TIMESTAMP": "1795765865167798", "_PID": "51317", "MESSAGE": "454.37.053.988 I slot print_timing: id  0 | task 22784 | n_gen =    366, tg =  60.55 t/s, tg_3s =  61.41 t/s"}
+{"__REALTIME_TIMESTAMP": "1795765868183156", "_PID": "51317", "MESSAGE": "454.40.069.366 I slot print_timing: id  0 | task 22784 | n_gen =    550, tg =  60.71 t/s, tg_3s =  61.02 t/s"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.502 I slot print_timing: id  0 | task 22784 | prompt eval time =     243.41 ms /    30 tokens (    8.11 ms per token,   123.25 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.506 I slot print_timing: id  0 | task 22784 |        eval time =   11509.49 ms /   700 tokens (   16.47 ms per token,    60.73 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.507 I slot print_timing: id  0 | task 22784 |       total time =   11752.90 ms /   730 tokens"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.508 I slot print_timing: id  0 | task 22784 |    graphs reused =      22705"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.508 I slot print_timing: id  0 | task 22784 |   graph reallocs =        198    /     0        (same size) / (changed size)"}
+{"__REALTIME_TIMESTAMP": "1795765870649269", "_PID": "51317", "MESSAGE": "454.42.535.527 I slot      release: id  0 | task 22784 | stop processing: n_tokens = 729, truncated = 0"}
+{"__REALTIME_TIMESTAMP": "1795765872184428", "_PID": "51317", "MESSAGE": "454.44.070.535 I slot       select: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.150 (> 0.100 thold), f_keep = 0.004"}
+{"__REALTIME_TIMESTAMP": "1795765872184428", "_PID": "51317", "MESSAGE": "454.44.070.703 I slot launch_slot_: id  0 | task 23617 | processing task, is_child = 0"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.959 I slot print_timing: id  0 | task 23617 | prompt eval time =     198.18 ms /    20 tokens (    9.91 ms per token,   100.92 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.963 I slot print_timing: id  0 | task 23617 |        eval time =     168.04 ms /    10 tokens (   18.67 ms per token,    53.56 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.963 I slot print_timing: id  0 | task 23617 |       total time =     366.22 ms /    30 tokens"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.964 I slot print_timing: id  0 | task 23617 |    graphs reused =      22713"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.964 I slot print_timing: id  0 | task 23617 |   graph reallocs =        200    /     0        (same size) / (changed size)"}
+{"__REALTIME_TIMESTAMP": "1795765872550679", "_PID": "51317", "MESSAGE": "454.44.436.976 I slot      release: id  0 | task 23617 | stop processing: n_tokens = 29, truncated = 0"}
+{"__REALTIME_TIMESTAMP": "1795765874167438", "_PID": "51317", "MESSAGE": "454.46.053.619 I slot       select: id  0 | task -1 | selected slot by LRU, n_tokens = 29, t_last = 32296003381"}
+{"__REALTIME_TIMESTAMP": "1795765874167438", "_PID": "51317", "MESSAGE": "454.46.053.696 I slot launch_slot_: id  0 | task 23649 | processing task, is_child = 0"}
+{"__REALTIME_TIMESTAMP": "1795765879766191", "_PID": "51317", "MESSAGE": "454.51.652.404 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =   8192, progress = 0.25, t =   5.60 s / 1463.21 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765882801891", "_PID": "51317", "MESSAGE": "454.54.688.110 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  12288, progress = 0.38, t =   8.63 s / 1423.15 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765885907154", "_PID": "51317", "MESSAGE": "454.57.793.377 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  16384, progress = 0.50, t =  11.74 s / 1395.61 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765889121691", "_PID": "51317", "MESSAGE": "455.01.007.903 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  20480, progress = 0.63, t =  14.95 s / 1369.52 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765892404171", "_PID": "51317", "MESSAGE": "455.04.290.386 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  24576, progress = 0.76, t =  18.24 s / 1347.62 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765895761949", "_PID": "51317", "MESSAGE": "455.07.648.169 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  28672, progress = 0.88, t =  21.59 s / 1327.75 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765897425623", "_PID": "51317", "MESSAGE": "455.09.311.844 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  30466, progress = 0.94, t =  23.26 s / 1309.91 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765899186978", "_PID": "51317", "MESSAGE": "455.11.073.195 I slot print_timing: id  0 | task 23649 | prompt processing, n_tokens =  32514, progress = 1.00, t =  25.02 s / 1299.55 tokens per second"}
+{"__REALTIME_TIMESTAMP": "1795765901814936", "_PID": "51317", "MESSAGE": "455.13.701.138 I slot print_timing: id  0 | task 23649 | prompt eval time =   25525.76 ms / 32518 tokens (    0.78 ms per token,  1273.93 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765901814936", "_PID": "51317", "MESSAGE": "455.13.701.142 I slot print_timing: id  0 | task 23649 |        eval time =    2121.66 ms /   105 tokens (   20.40 ms per token,    49.02 tokens per second)"}
+{"__REALTIME_TIMESTAMP": "1795765901814936", "_PID": "51317", "MESSAGE": "455.13.701.143 I slot print_timing: id  0 | task 23649 |       total time =   27647.42 ms / 32623 tokens"}
+{"__REALTIME_TIMESTAMP": "1795765901814936", "_PID": "51317", "MESSAGE": "455.13.701.143 I slot print_timing: id  0 | task 23649 |    graphs reused =      22816"}
+{"__REALTIME_TIMESTAMP": "1795765901814936", "_PID": "51317", "MESSAGE": "455.13.701.144 I slot print_timing: id  0 | task 23649 |   graph reallocs =        215    /     0        (same size) / (changed size)"}
+{"__REALTIME_TIMESTAMP": "1795765901815591", "_PID": "51317", "MESSAGE": "455.13.701.743 I slot      release: id  0 | task 23649 | stop processing: n_tokens = 32622, truncated = 0"}

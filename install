@@ -1,0 +1,18 @@
+#!/bin/sh
+# Builds nltop and copies it to $PREFIX/bin (default /usr/local/bin).
+#
+#   ./install                  # asks for sudo when /usr/local/bin needs it
+#   PREFIX=$HOME/.local ./install
+set -eu
+cd "$(dirname "$0")"
+
+./build
+
+bindir=${PREFIX:-/usr/local}/bin
+if mkdir -p "$bindir" 2>/dev/null && [ -w "$bindir" ]; then
+    install -m 0755 builds/nltop "$bindir/nltop"
+else
+    echo "install: $bindir needs root, using sudo"
+    sudo install -D -m 0755 builds/nltop "$bindir/nltop"
+fi
+echo "installed $bindir/nltop"
