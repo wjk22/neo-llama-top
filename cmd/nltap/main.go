@@ -26,7 +26,7 @@ import (
 	"github.com/wjk22/neo-llama-top/internal/tap"
 )
 
-// version is set by ./build, e.g. "0.1.7 (3bc09b7)".
+// version is set by ./build, e.g. "0.2.7 (3bc09b7)".
 var version = "unversioned build"
 
 type caller struct {

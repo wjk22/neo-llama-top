@@ -3,7 +3,7 @@
 #
 # The version is MAJOR.MINOR from the VERSION file, then the number of commits
 # since VERSION last changed (that commit is 1), then the short commit hash:
-# 0.1.7 (3bc09b7). A build with uncommitted changes reads 0.1.7+dev (3bc09b7).
+# 0.2.7 (3bc09b7). A build with uncommitted changes reads 0.2.7+dev (3bc09b7).
 #
 # Without a .git folder, pass the number and hash in:
 #   BUILD_N=7 BUILD_HASH=3bc09b7 ./build

@@ -44,7 +44,7 @@ Tests use the captured data in `testdata/`; they need no server, no journal and 
 
 ## Version
 
-`VERSION` holds `MAJOR.MINOR` and is changed by hand. The third number is the count of commits since `VERSION` last changed, that commit being 1. `./build` works it out from git, so nothing else stores a version. A build shows `0.1.7 (3bc09b7)`, or `0.1.7+dev (3bc09b7)` with uncommitted changes.
+`VERSION` holds `MAJOR.MINOR` and is changed by hand. The third number is the count of commits since `VERSION` last changed, that commit being 1. `./build` works it out from git, so nothing else stores a version. A build shows `0.2.7 (3bc09b7)`, or `0.2.7+dev (3bc09b7)` with uncommitted changes.
 
 ## Git
 

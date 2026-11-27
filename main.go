@@ -18,7 +18,7 @@ import (
 )
 
 // version is set by ./build: MAJOR.MINOR from the VERSION file, the commit
-// count since it last changed, and the commit, e.g. "0.1.7 (3bc09b7)".
+// count since it last changed, and the commit, e.g. "0.2.7 (3bc09b7)".
 var version = "unversioned build"
 
 func main() {
